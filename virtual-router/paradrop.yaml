@@ -1,0 +1,17 @@
+name: virtual-router
+version: 0.1.0
+summary: A chute with a virtual router
+description: |
+  This chute demonstrate how to define a chute to start a virtual Wi-Fi router.
+
+config:
+  net:
+    wifi:
+      type: wifi
+      intfName: wlan0
+      ssid: Paradrop-VirtualRouter
+      key: ParadropRocks!
+      dhcp:
+        lease: 12h
+        start: 100
+        limit: 50

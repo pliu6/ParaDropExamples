@@ -1,0 +1,13 @@
+name: hello-world-node-light
+version: 0.1.0
+summary: A light chute written with node.js
+description: |
+  A simple chute to demonstrate the basic structure of a light ParaDrop chute implemented with node.js
+
+type: light
+use: node
+command: node index.js
+
+config:
+  web:
+    port: 80

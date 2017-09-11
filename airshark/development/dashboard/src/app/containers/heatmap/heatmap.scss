@@ -1,0 +1,21 @@
+.heatmap {
+  background-color: black;
+  margin-bottom: 10px;
+}
+
+.heatmap-axis text {
+  fill: grey;
+}
+
+.heatmap-axis line {
+  stroke: grey;
+}
+
+.heatmap-axis path {
+  stroke: grey;
+}
+
+.heatmap-axis-label {
+  fill: white;
+  font-size: 14px;
+}

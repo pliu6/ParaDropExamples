@@ -1,5 +1,4 @@
 from aiohttp import web
-from asyncio import CancelledError
 import socketio
 
 from .airshark_client import listen_to_airshark_spectrum, listen_to_airshark_analyzer
@@ -20,15 +19,15 @@ async def cleanup_background_tasks(app):
 def main():
     app = web.Application()
 
-    sio = socketio.AsyncServer()
-    socketio_namespace = SocketioNamespace('/sio')
+    sio = socketio.AsyncServer(async_mode='aiohttp', logger=False)
+    socketio_namespace = SocketioNamespace('/airshark')
     sio.register_namespace(socketio_namespace)
     sio.attach(app)
 
     app['socketio_namespace'] = socketio_namespace
     app.on_startup.append(start_background_tasks)
     app.on_cleanup.append(cleanup_background_tasks)
-    web.run_app(app, host='127.0.0.1', port=80)
+    web.run_app(app, port=80)
 
 if __name__ == '__main__':
     main()

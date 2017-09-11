@@ -2,7 +2,7 @@ import socketio
 
 class SocketioNamespace(socketio.AsyncNamespace):
     def __init__(self, namespace):
-        socketio.Namespace.__init__(self, namespace)
+        socketio.AsyncNamespace.__init__(self, namespace)
         self.client_count = 0
 
     def on_connect(self, sid, environ):

@@ -19,4 +19,4 @@ class SocketioNamespace(socketio.AsyncNamespace):
 
     async def send_analyzer_result(self, data):
         if (self.client_count > 0):
-            await self.emit('anlyzer', data)
+            await self.emit('analyzer', data)

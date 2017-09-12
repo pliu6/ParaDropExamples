@@ -149,14 +149,14 @@ class heatmapController {
       .attr('x', legendStep * 1.2)
       .attr('class', 'legend-label')
       .style('text-anchor', 'left')
-      .text(this.maxCount);
+      .text('> ' + this.maxCount);
 
     this.legendSvg.append('text')
       .attr('y', legendHeight - margin.top)
       .attr('x', legendStep * 1.2)
       .attr('class', 'legend-label')
       .style('text-anchor', 'left')
-      .text('0');
+      .text('> 0');
   }
 
   updateHeatmap() {

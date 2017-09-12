@@ -2,11 +2,11 @@ import math
 import ujson
 
 class Heatmap(object):
-    def __init__(self, heatmap_socketio):
+    def __init__(self, socketio):
         self.heat_map_data = {}
         self.prev_freq = 0
         self.power_step = 0.5  # in dBm
-        self.heatmap_socketio = heatmap_socketio
+        self.socketio = socketio
 
     async def on_new_packet(self, tsf, freq, noise, rssi, powers):
         if freq < self.prev_freq:
@@ -26,4 +26,4 @@ class Heatmap(object):
         self.prev_freq = freq
 
     async def send_data(self):
-        await self.heatmap_socketio.send_heatmap(ujson.dumps(self.heat_map_data))
+        await self.socketio.send_heatmap(ujson.dumps(self.heat_map_data))

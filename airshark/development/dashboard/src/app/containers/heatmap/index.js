@@ -15,7 +15,22 @@ class heatmapController {
   }
 
   $onInit() {
+    this.colours = [
+      '#6363FF', '#6373FF', '#63A3FF', '#63E3FF', '#63FFFB', '#63FFCB',
+      '#63FF9B', '#63FF6B', '#7BFF63', '#BBFF63', '#DBFF63', '#FBFF63',
+      '#FFD363', '#FFB363', '#FF8363', '#FF7363', '#FF6364'];
+
+    this.heatmapColourScale = this.d3.scaleLinear()
+      .domain(this.d3.range(0, 1, 1.0 / (this.colours.length - 1)))
+      .range(this.colours);
+
+    this.maxCount = 40;
+    const heatmapWrapper = this.d3.select(this._$element[0]).select('.heatmap-wrapper');
+    this.heatmapWrapperHeight = Math.floor(heatmapWrapper.node().getBoundingClientRect().width / 2);
+
     this.initHeatmap();
+    this.initLegend();
+
     this.socket.on('heatmap', this.onAirsharkMessage.bind(this));
   }
 
@@ -23,11 +38,16 @@ class heatmapController {
     this.socket.off('heatmap', this.onAirsharkMessage.bind(this));
   }
 
+  heatMapColour(count) {
+    return this.heatmapColourScale(count / this.maxCount);
+  }
+
   initHeatmap() {
     const heatmapContainer = this.d3.select(this._$element[0]).select('.heatmap');
     const containerWidth = Math.floor(heatmapContainer.node().getBoundingClientRect().width);
-    const containerHeight = Math.floor(containerWidth / 2);
-    const margin = {top: 50, right: 20, bottom: 20, left: 60};
+    const containerHeight = this.heatmapWrapperHeight;
+
+    const margin = {top: 50, right: 60, bottom: 20, left: 60};
     this.width = containerWidth - margin.left - margin.right;
     this.height = containerHeight - margin.top - margin.bottom;
     const freqMin = 2403.25;
@@ -81,15 +101,62 @@ class heatmapController {
       .attr('class', 'heatmap-axis-label')
       .style('text-anchor', 'middle')
       .text('Signal Strength (dBm)');
+  }
 
-    const colours = [
-      '#6363FF', '#6373FF', '#63A3FF', '#63E3FF', '#63FFFB', '#63FFCB',
-      '#63FF9B', '#63FF6B', '#7BFF63', '#BBFF63', '#DBFF63', '#FBFF63',
-      '#FFD363', '#FFB363', '#FF8363', '#FF7363', '#FF6364'];
+  initLegend() {
+    const legendContainer = this.d3.select(this._$element[0]).select('.legend');
+    const legendWidth = Math.floor(legendContainer.node().getBoundingClientRect().width);
+    const legendHeight = this.heatmapWrapperHeight;
+    const margin = {top: 50, right: 0, bottom: 20, left: 0};
 
-    this.heatmapColourScale = this.d3.scaleLinear()
-      .domain(this.d3.range(0, 1, 1.0 / (colours.length - 1)))
-      .range(colours);
+    this.legendSvg = legendContainer.append('svg')
+                                      .attr('width', legendWidth)
+                                      .attr('height', legendHeight)
+                                    .append('g')
+                                      .attr('transform', 'translate(' + margin.left + ',' + margin.top + ')');
+
+    const legend = [];
+    for (let i = 0; i < this.colours.length; i++) {
+      legend.push([i, this.colours[i]]);
+    }
+
+    const legendStep = legendHeight / this.colours.length;
+
+    const legendScale = this.d3.scaleLinear()
+      .domain([0, this.colours.length - 1])
+      .range([legendHeight - margin.bottom - legendStep, 0]);
+
+    const selection = this.legendSvg.selectAll('rect')
+      .data(legend)
+      .attr('x', 0)
+      .attr('y', d => legendScale(d[0] + 1))
+      .attr('width', legendStep)
+      .attr('height', legendStep)
+      .attr('fill', d => d[1]);
+
+    selection.enter()
+      .append('rect')
+      .attr('x', 0)
+      .attr('y', d => legendScale(d[0] + 1))
+      .attr('width', legendStep)
+      .attr('height', legendStep)
+      .attr('fill', d => d[1]);
+
+    selection.exit().remove();
+
+    this.legendSvg.append('text')
+      .attr('y', 0)
+      .attr('x', legendStep * 1.2)
+      .attr('class', 'legend-label')
+      .style('text-anchor', 'left')
+      .text(this.maxCount);
+
+    this.legendSvg.append('text')
+      .attr('y', legendHeight - margin.top)
+      .attr('x', legendStep * 1.2)
+      .attr('class', 'legend-label')
+      .style('text-anchor', 'left')
+      .text('0');
   }
 
   updateHeatmap() {
@@ -113,10 +180,6 @@ class heatmapController {
       .attr('fill', d => this.heatMapColour(d[2]));
 
     selection.exit().remove();
-  }
-
-  heatMapColour(count) {
-    return this.heatmapColourScale(count / 100.0);
   }
 
   processHeatmapData(heatmapData) {

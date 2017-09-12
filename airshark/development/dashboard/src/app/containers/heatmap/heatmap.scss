@@ -3,6 +3,11 @@
   margin-bottom: 10px;
 }
 
+.legend {
+  background-color: black;
+  margin-bottom: 10px;
+}
+
 .heatmap-axis text {
   fill: grey;
 }
@@ -19,3 +24,8 @@
   fill: white;
   font-size: 14px;
 }
+
+ .legend-label {
+   fill: white;
+   font-size: 12px;
+ }

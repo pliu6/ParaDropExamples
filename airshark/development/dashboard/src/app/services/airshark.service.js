@@ -3,7 +3,11 @@
 export default class Airshark {
   /* @ngInject */
   constructor(AppConstants, SocketIo, $log) {
-    this.socket = SocketIo.io(AppConstants.host + AppConstants.namespace);
+    if (AppConstants.host) {
+      this.socket = SocketIo.io(AppConstants.host + AppConstants.namespace);
+    } else {
+      this.socket = SocketIo.io(AppConstants.namespace);
+    }
 
     this.socket.on('connect', () => {
       $log.log('socket.io connected');

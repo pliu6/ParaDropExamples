@@ -1,0 +1,9 @@
+name: airshark-demo
+version: 0.1.0
+summary: A chute to demonstrate the usage of Airshark API
+description: |
+  A simple chute built with aiohttp and Angular to show the applications of the Airshark API.
+
+config:
+  web:
+    port: 80

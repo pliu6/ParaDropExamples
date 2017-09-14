@@ -1,9 +1,10 @@
 from aiohttp import ClientSession, BasicAuth, WSMsgType
-from asyncio import CancelledError
+from asyncio import CancelledError, get_event_loop
+import ujson
 
 from . import config
-from .spectrum_decoder import SpectrumDecoder
-from .heatmap import Heatmap
+from .spectrum import Spectrum
+
 
 def get_authentication():
     auth = None
@@ -11,7 +12,8 @@ def get_authentication():
     if config.DEV_MODE:
         auth = BasicAuth(config.API_USERNAME, config.API_PASSWORD)
     else:
-        headers ='Bearer:' + config.API_TOKEN
+        # auth = BasicAuth(config.API_USERNAME, config.API_PASSWORD)
+        headers = { 'Authorization': 'Bearer ' + config.API_TOKEN }
 
     return auth, headers
 
@@ -23,11 +25,12 @@ async def listen_to_airshark_spectrum(app, socketio):
                 autoclose=False, \
                 autoping=True)
 
-            heatmap = Heatmap(socketio)
             async for msg in ws:
                 if (msg.type == WSMsgType.BINARY):
-                    for (tsf, freq, noise, rssi, pwr) in SpectrumDecoder.decode(msg.data):
-                        await heatmap.on_new_packet(tsf, freq, noise, rssi, pwr)
+                    #heatmap_data = await get_event_loop().run_in_executor(None, Spectrum.heatmap, msg.data)
+                    #await socketio.send_heatmap(ujson.dumps(heatmap_data))
+                    # Due to performance issue, we can not process the spectrum data in real-time.
+                    pass
                 elif msg.type == WSMsgType.ERROR:
                     print('Error during receive %s' % ws.exception())
                     break

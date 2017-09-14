@@ -3,9 +3,8 @@ Demo chute to use airshark API
 This simple chute demonstrate how to use Airshark API of ParaDrop
 
 
-Building
---------
-
+Build the backend
+---------------------
 On host
 ```
 docker build -f development/Dockerfile -t paradrop/airshark-demo .
@@ -18,8 +17,17 @@ cd /opt/paradrop/development
 pip install --editable .
 ```
 
-Deployment
------------
+Build the frontend (dashboard)
+------------------------------------
+On host
+```
+cd development/dashboard
+yarn
+gulp build
+```
+
+Deploy the chute
+--------------------
 On host
 ```
 ./install.sh

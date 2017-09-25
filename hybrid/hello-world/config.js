@@ -2,10 +2,10 @@
 
 module.exports = {
   provider: {
-    // url: "https://paradrop.org",
+    url: "https://www.paradrop.org",
 
     // Useful for testing against a local instance of the paradrop server
-    url: "http://localhost:3000",
+    // url: "http://localhost:3000",
 
     // These are the routes that the OAuth client needs to hit to run its flow.
     // You don't need to change them.
@@ -14,9 +14,9 @@ module.exports = {
   },
   consumer: {
     url: "http://localhost:3004",
-    name: 'Demo App',
+    name: 'Demo',
     icon: 'http://example.com/icon_64.png',
-    clientId: '',
-    clientSecret: ''
+    clientId: 'put your client id here',
+    clientSecret: 'put your client secret here'
   },
 };
